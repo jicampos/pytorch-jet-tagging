@@ -13,7 +13,7 @@ conda activate jet-tagging
 
 ### Data
 
-Numpy files are proveded through [sharepoint]() for easy setup. Data is taken from [hls4ml LHC Jet dataset](https://paperswithcode.com/dataset/hls4ml-lhc-jet-dataset). Review the README.md under `data` for further details.
+Numpy files are proveded through [sharepoint](https://fermicloud-my.sharepoint.com/:f:/r/personal/jcampos_services_fnal_gov/Documents/jet-tagging-data?csf=1&web=1&e=A9V7k6) for easy setup. Data is taken from [hls4ml LHC Jet dataset](https://paperswithcode.com/dataset/hls4ml-lhc-jet-dataset). Review the README.md under `data` for further details.
 
 ## Training
 
