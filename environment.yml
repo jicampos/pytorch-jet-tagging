@@ -1,0 +1,13 @@
+name: jet-tagging
+channels:
+  - pytorch
+  - anaconda
+  - conda-forge
+dependencies:
+  - python=3.7
+  - pytorch-cpu
+  - pip 
+  - pip:
+    - numpy
+    - torchvision==0.13.1
+    - scikit-learn
