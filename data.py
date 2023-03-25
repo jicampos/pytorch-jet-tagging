@@ -23,9 +23,9 @@ def data_loader(batch_size=1024, shuffle=True):
 
     # create dataset and dataloader
     train_set = TensorDataset(X_train, y_train)
-    train_dataloader = DataLoader(train_set)
+    train_dataloader = DataLoader(train_set, batch_size=batch_size, shuffle=shuffle)
 
     test_set = TensorDataset(X_test, y_test)
-    test_dataloader = DataLoader(test_set)
+    test_dataloader = DataLoader(test_set, batch_size=batch_size, shuffle=shuffle)
 
     return train_dataloader, test_dataloader

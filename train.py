@@ -12,54 +12,53 @@ from data import data_loader
 
 def _train_epoch(model, dataloader, optimizer, criterion):
     correct = 0
-    total = 0
+    total_classified = 0
+    total_loss = 0
     model.train()
 
-    for idx, (inputs, targets) in enumerate(dataloader):
+    for inputs, targets in dataloader:
         # compute output
         output = model(inputs.float())
-
         loss = criterion(output, targets.float())
 
-        # compute batch accuracy 
+        # get model predictions and labels
         batch_preds = torch.max(output, 1)[1]
         batch_labels = torch.max(targets, 1)[1]
-        batch_acc = accuracy_score(
-            batch_labels.detach().numpy(), batch_preds.detach().numpy()
-        )
 
-        # accumulate number of correctly classified and total processed 
-        correct += (batch_preds == batch_labels).astype(torch.int32).sum()
-        total += len(inputs)
+        # accumulate loss and total classified
+        correct += (batch_preds == batch_labels).type(torch.int32).sum()
+        total_classified += len(inputs)
+        total_loss += loss.item()
 
-        # compute gradient and do SGD step
+        # compute gradient and update parameters
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
     
-    return correct/total
+    return (correct/total_classified, total_loss)
 
 
 def validate(model, dataloader, criterion):
     correct = 0
-    total = 0
+    total_classified = 0
     total_loss = 0
     model.eval()
 
-    for idx, (inputs, targets) in enumerate(dataloader):
+    for inputs, targets in dataloader:
         # compute output
         output = model(inputs.float())
         loss = criterion(output, targets.float())
 
+        # get model predictions and labels
         batch_preds = torch.max(output, 1)[1]
         batch_labels = torch.max(targets, 1)[1]
 
-        # accumulate number of correctly classified and total processed 
-        correct += (batch_preds == batch_labels).astype(torch.int32).sum()
-        total += len(inputs)
+        # accumulate loss and total classified
+        correct += (batch_preds == batch_labels).type(torch.int32).sum()
+        total_classified += len(inputs)
         total_loss += loss.item()
     
-    return correct/total
+    return (correct/total_classified, total_loss)
 
 
 def train(args):
@@ -75,10 +74,10 @@ def train(args):
 
     for epoch in range(args.epochs):
         # train for one epoch
-        epoch_acc = _train_epoch(model, train_loader, optimizer, criterion)
-        val_acc = _train_epoch(model, test_loader)
+        epoch_acc, epoch_loss = _train_epoch(model, train_loader, optimizer, criterion)
+        val_acc, val_loss = validate(model, test_loader, criterion)
 
-        print(f'Epoch[{epoch}/{args.epochs}] Train Acc: {epoch_acc:.4f}    Test Acc: {val_acc:.4f}')
+        print(f'Epoch[{epoch}/{args.epochs}] Train Acc: {epoch_acc:.4f}  Train Loss: {epoch_loss:.4f}  Test Acc: {val_acc:.4f}  Test Loss: {val_loss:.4f}')
 
 
 if __name__ == "__main__":
